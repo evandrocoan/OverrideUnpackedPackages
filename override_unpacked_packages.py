@@ -9,11 +9,18 @@ from threading import Thread
 
 
 PACKAGE_NAME = "Override Unpacked Packages"
-PACKAGES_PATH = sublime.packages_path()
-SETTINGS_FOLDER = os.path.join( PACKAGES_PATH, "User", PACKAGE_NAME )
+PACKAGES_PATH = ""
+SETTINGS_FOLDER = ""
 
 
 def plugin_loaded():
+    global PACKAGE_NAME
+    global PACKAGES_PATH
+
+    # We only can call `sublime` API, after the `plugin_loaded` forward
+    PACKAGES_PATH = sublime.packages_path()
+    SETTINGS_FOLDER = os.path.join( PACKAGES_PATH, "User", PACKAGE_NAME )
+
     # print( "PACKAGE_NAME:    " + str( PACKAGE_NAME ) )
     # print( "PACKAGES_PATH:   " + str( PACKAGES_PATH ) )
     # print( "SETTINGS_FOLDER: " + str( SETTINGS_FOLDER ) )
