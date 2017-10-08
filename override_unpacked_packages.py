@@ -7,15 +7,16 @@ import sublime_plugin
 
 from threading import Thread
 
+CURRENT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
+PACKAGE_NAME      = os.path.basename( CURRENT_DIRECTORY ).rsplit('.', 1)[0]
 
-PACKAGE_NAME = "Override Unpacked Packages"
 PACKAGES_PATH = ""
 SETTINGS_FOLDER = ""
 
 
 def plugin_loaded():
-    global PACKAGE_NAME
     global PACKAGES_PATH
+    global SETTINGS_FOLDER
 
     # We only can call `sublime` API, after the `plugin_loaded` forward
     PACKAGES_PATH = sublime.packages_path()
