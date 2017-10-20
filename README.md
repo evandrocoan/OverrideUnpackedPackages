@@ -26,6 +26,30 @@ When the `Override Unpacked Packages` will perform the override, it will rename 
 original names as the `.sublime-menu` mentioned just above.
 
 
+## API
+
+Other packages can import `OverrideUnpackedPackages` and add files to be copied and overridden.
+This is a simple example:
+```python
+import os
+from OverrideUnpackedPackages.override_unpacked_packages import add_folder_to_processing_queue
+
+CURRENT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
+
+
+def plugin_loaded() :
+    add_files_to_copy_list()
+
+def add_files_to_copy_list():
+    target_directory = os.path.join( CURRENT_DIRECTORY, "amxmodx" )
+    add_folder_to_processing_queue( target_directory, 100 )
+```
+
+This also works when the package is inside a `.sublime-package` file. This is automatically detected
+by `OverrideUnpackedPackages` when the `CURRENT_DIRECTORY` is set to the folder `.sublime-package`.
+Therefore the file is unzipped, instead of just copied.
+
+
 ## License
 
 All files in this repository are released under GNU General Public License v3.0
