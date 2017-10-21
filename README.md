@@ -41,13 +41,12 @@ def plugin_loaded() :
     add_files_to_copy_list()
 
 def add_files_to_copy_list():
-    target_directory = os.path.join( CURRENT_DIRECTORY, "amxmodx" )
-    add_folder_to_processing_queue( target_directory, 100 )
+    add_folder_to_processing_queue( CURRENT_DIRECTORY, "amxmodx", 100 )
 ```
 
-This also works when the package is inside a `.sublime-package` file. This is automatically detected
-by `OverrideUnpackedPackages` when the `CURRENT_DIRECTORY` is set to the folder `.sublime-package`.
-Therefore the file is unzipped, instead of just copied.
+This some code also works when the package is inside a `.sublime-package` file. This is
+automatically detected by `OverrideUnpackedPackages` when the `CURRENT_DIRECTORY` is set to the
+folder `.sublime-package`. Therefore the file is unzipped, instead of just copied.
 
 
 ## License

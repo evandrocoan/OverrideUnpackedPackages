@@ -43,7 +43,7 @@ def plugin_loaded():
 
     # Flush out the accumulated files
     sublime.set_timeout_async( start_overriding_files, 5000 )
-    add_folder_to_processing_queue( SETTINGS_FOLDER, 1001 )
+    add_folder_to_processing_queue( SETTINGS_FOLDER, priority=1001 )
 
 
 def unpack_variables():
@@ -69,17 +69,28 @@ class OverrideUnpackedPackagesNowCommand(sublime_plugin.TextCommand):
         start_overriding_files()
 
 
-def add_folder_to_processing_queue(directory_path, priority):
+def add_folder_to_processing_queue(directory_path, folder_name="", priority=100):
     """
-        The priority 1 to 1000 should be used for files which are added by packages, which want to
-        run before the user overriding, i.e., do not want to override user files in cases the user
-        has also configured the package to run.
+        Add a folder to the copied and override an unpacked package. It must be called on the 5
+        first seconds after the `plugin_loaded()` forward has been called by Sublime Text.
 
-        @param directory_path  a file full path like `C:\Sublime\Data\Packages\MyPackage\DirectoryToInstall`,
+        If this is called later, you need to import the non-blocking function
+        `start_overriding_files()` function, and then call it when finished adding files to the
+        queue.
+
+        @param directory_path  a file full path like `C:\Sublime\Data\Packages\MyPackage`,
                                this also accepts path generated from inside a sublime-package like
-                               `C:\Sublime\Data\Installed Packages\MyPackage.sublime-package\DirectoryToInstall`
+                               `C:\Sublime\Data\Installed Packages\MyPackage.sublime-package`
+
+        @param folder_name     the name of the folder to install/copy, which is inside the
+                               `directory_path`
+
+        @param priority        The priority 1 to 1000 should be used for files which are added by
+                               packages, which want to run before the user overriding, i.e., do not
+                               want to override user files in cases the user has also configured the
+                               package to run.
     """
-    g_working_queue.put( (priority, directory_path) )
+    g_working_queue.put( (priority, directory_path, folder_name) )
 
 
 def start_overriding_files():
@@ -99,14 +110,15 @@ def _load_overrides():
     # log( 2, "( start_overriding_files ) thread started coping files." )
 
     while not g_working_queue.empty():
-        directory_path = g_working_queue.get()[1]
+        queue_item     = g_working_queue.get()
+        directory_path = queue_item[1]
+        directory_name = queue_item[2]
 
         if ".sublime-package" in directory_path:
-            zip_path, zip_folder = get_zipfile_paths( directory_path )
-            copy_overrides_from_zipfile( zip_path, zip_folder, PACKAGES_PATH )
+            copy_overrides_from_zipfile( directory_path, directory_name, PACKAGES_PATH )
 
         else:
-            copy_overrides_from_folder( directory_path, PACKAGES_PATH )
+            copy_overrides_from_folder( directory_path, directory_name, PACKAGES_PATH )
 
 
 def get_zipfile_paths(directory_path):
@@ -176,7 +188,7 @@ def copy_overrides_from_zipfile(zip_path, zip_folder, destine_folder):
         # log( 2, "The file was successfully extracted: %s" % zip_path )
 
 
-def copy_overrides_from_folder( root_source_folder, root_destine_folder, move_files=False ):
+def copy_overrides_from_folder( root_source_folder, directory_name, root_destine_folder, move_files=False ):
     """
         Python How To Copy Or Move Folders Recursively
         http://techs.studyhorror.com/python-copy-move-sub-folders-recursively-i-92
@@ -195,6 +207,9 @@ def copy_overrides_from_folder( root_source_folder, root_destine_folder, move_fi
         def copy_file():
             shutil.copy( source_file, destine_folder )
 
+    root_source_folder  = os.path.join( root_source_folder, directory_name )
+    root_destine_folder = os.path.join( root_destine_folder, directory_name )
+
     for source_folder, directories, files in os.walk( root_source_folder ):
         destine_folder = source_folder.replace( root_source_folder, root_destine_folder)
 
@@ -208,7 +223,7 @@ def copy_overrides_from_folder( root_source_folder, root_destine_folder, move_fi
             if os.path.exists( destine_file ):
                 os.remove( destine_file )
 
-            # log( 2, ( "Moving" if move_files else "Coping" ), "file:", source_file, "to", destine_file )
+            # log( 2, ( "Moving" if move_files else "Coping" ), " file: ", source_file, " to ", destine_file )
             copy_file()
 
             if file.endswith(".hide"):
