@@ -32,7 +32,18 @@ Other packages can import `OverrideUnpackedPackages` and add files to be copied 
 This is a simple example:
 ```python
 import os
-from OverrideUnpackedPackages.override_unpacked_packages import add_folder_to_processing_queue
+
+try:
+    from OverrideUnpackedPackages.override_unpacked_packages import add_folder_to_processing_queue
+
+except ImportError as error:
+    print( "Error: Could not import the package `OverrideUnpackedPackages`, please install the package. " + str( error ) )
+
+    def add_folder_to_processing_queue(*args):
+        print( "add_folder_to_processing_queue could not add the following arguments..." )
+
+        for arg in args:
+            print( str( arg ) )
 
 CURRENT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
 
