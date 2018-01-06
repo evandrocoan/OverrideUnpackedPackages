@@ -13,8 +13,8 @@ from queue import Queue
 from threading import Thread
 
 
-CURRENT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
-PACKAGE_NAME      = os.path.basename( CURRENT_DIRECTORY ).rsplit('.', 1)[0]
+PACKAGE_ROOT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
+PACKAGE_NAME = os.path.basename( PACKAGE_ROOT_DIRECTORY ).rsplit('.', 1)[0]
 
 PACKAGES_PATH = ""
 SETTINGS_FOLDER = ""
@@ -32,7 +32,7 @@ log = Debugger( 127, os.path.basename( __file__ ) )
 # log( 2, "..." )
 # log( 2, "..." )
 # log( 2, "Debugging" )
-# log( 2, "CURRENT_DIRECTORY: " + CURRENT_DIRECTORY )
+# log( 2, "PACKAGE_ROOT_DIRECTORY: " + PACKAGE_ROOT_DIRECTORY )
 
 
 def plugin_loaded():
