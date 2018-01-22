@@ -24,7 +24,7 @@ g_working_queue = Queue()
 
 
 # Import the debugger
-from python_debug_tools import getLogger
+from debug_tools import getLogger
 
 # Debugger settings: 0 - disabled, 127 - enabled
 log = getLogger( 127, os.path.basename( __file__ ) )
