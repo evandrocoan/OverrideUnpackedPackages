@@ -122,7 +122,7 @@ def _load_overrides():
 
 
 def get_zipfile_paths(directory_path):
-    match = re.search( "\.sublime-package", directory_path )
+    match = re.search( r"\.sublime-package", directory_path )
 
     zip_path   = ""
     zip_folder = ""
