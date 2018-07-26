@@ -1,6 +1,6 @@
 [
   {
-    "caption": "Override Unpacked Packages Now",
+    "caption": "OverrideUnpackedPackages: Now",
     "command": "override_unpacked_packages_now"
   },
 ]
