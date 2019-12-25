@@ -110,6 +110,7 @@ folder `.sublime-package`. Therefore the file is unzipped, instead of just copie
 search for **`OverrideUnpackedPackages`** and press <kbd>Enter</kbd>
 
 See also:
+
 1. [ITE - Integrated Toolset Environment](https://github.com/evandrocoan/ITE)
 1. [Package control docs](https://packagecontrol.io/docs/usage) for details.
 
